@@ -14,16 +14,32 @@ public class WindChillLogik {
 	 * Berechnung der gefühlten Temperatur nach
 	 * <a href="https://de.wikipedia.org/wiki/Windchill#Aktuelle_Berechnung_und_Tabelle">Wikipedia</a>.
 	 * 
-	 * @param physTemperatur Tatsächliche (physische) Temperatur in Grad Celsius, muss 
-	 *                       kleiner-gleich 10 Grad sein
+	 * @param physTemperatur Tatsächliche (physische) Temperatur in Grad Celsius, muss im  
+	 *                       Bereich -50.0 Grad und 10.0 Grad liegen
 	 * 
 	 * @param windgeschwindigkeit Windgeschwindigkeit in km/h; muss innerhalb 5.0 km/h
 	 *                            und 60 km/h sein
 	 * 
 	 * @return Gefühlte Temperatur
+	 * 
+	 * @throws WindChillException Mindestens einer der beiden Eingabewerte liegt außerhalb
+	 *                            seines zulässigen Bereichs 
 	 */
 	public double berechneWindChillTemperatur( double physTemperatur, 
-			                                   double windgeschwindigkeit ) {
+			                                   double windgeschwindigkeit ) 
+					throws WindChillException {
+		
+		if ( physTemperatur < -50.0 || physTemperatur > 10.0 ) {
+			
+			throw new WindChillException( 
+					"Physische Temperatur " + physTemperatur + " Grad Celsius ausserhalb Bereich -50.0 und 10.0 Grad Celsius." );
+		}
+		if ( windgeschwindigkeit < 5.0 || windgeschwindigkeit > 60.0 ) {
+			
+			throw new WindChillException( 
+					"Windgeschwindigkeit" + windgeschwindigkeit + " km/h ausserhalb Bereich 5.0 km/h und 60 km/h." );			
+		}
+		
 		
 	    final double v  = Math.pow( windgeschwindigkeit, 0.16 );
 	    final double va = physTemperatur;

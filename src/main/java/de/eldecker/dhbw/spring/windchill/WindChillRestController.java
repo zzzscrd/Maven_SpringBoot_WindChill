@@ -10,6 +10,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 
+/**
+ * REST-Controller-Klasse mit Implementierung für REST-Endpunkt für Durchführung
+ * der Windchill-Berechnung. 
+ */
 @RestController
 @RequestMapping("/windchill/v1")
 public class WindChillRestController {
@@ -19,7 +23,7 @@ public class WindChillRestController {
 	
 	
 	/**
-	 * Konstruktor für Dependency-Injection
+	 * Konstruktor für Dependency-Injection.
 	 */
 	@Autowired
 	public WindChillRestController( WindChillLogik windChillLogik ) {
@@ -30,12 +34,35 @@ public class WindChillRestController {
 	
 	/**
 	 * Methode für HTTP-GET-Endpunkt, um eine Berechnung der WindChill-Temperatur durchzugeführen.
+	 * <br><br>
+	 * 
+	 * Beispiel-URL für lokalen Aufruf (physische Temperatur 1° Celsius und
+	 * Windgeschwindigkeit 25° Celsius):
+	 * <pre>
+	 * http://localhost:8080/windchill/v1/berechnung?pt=1&amp;wg=25
+	 * </pre>
+	 * 
+	 * Dieser Aufruf ergibt das folgende Ergebnisdokument:
+	 * <pre>
+	 * { 
+	 *    "tatsaechlicheTemperatur":  1.0,
+	 *    "windgeschwindigkeit"    : 25.0,
+	 *    "gefuehlteTemperatur"    : -4.0
+	 * }
+	 * <pre>
+	 * 
+	 * Die folgende Beispiel-URL enthält eine unzulässige Temperatur, deshalb
+	 * wird bei ihrem Aufruf eine Exception geworfen:
+	 * <pre>
+	 * http://localhost:8080/windchill/v1/berechnung?pt=12&amp;wg=25
+	 * </pre> 
 	 * 
 	 * @param physTemperatur URL-Parameter mit physischer Temperatur
 	 * 
 	 * @param windgeschwindigkeit URL-Parameter mit Windgeschwindigkeit
 	 * 
-	 * @return Ergebnis der Berechnung
+	 * @return Ergebnis der Berechnung; das enthaltene {@code ErgebnisRecord}-Objekt wird
+	 *         automatisch nach JSON umgewandelt. 
 	 * 
 	 * @throws WindChillException Eingabewerte im ungültigen Bereich
 	 */
@@ -46,13 +73,13 @@ public class WindChillRestController {
 											) throws WindChillException {
 		
 		final double gefuehlteTemperatur = 
-				_windChillLogik.berechneWindChillTemperatur( physTemperatur, windgeschwindigkeit ); // throws WindChillException
+				_windChillLogik.berechneWindChillTemperatur( physTemperatur, 
+						                                     windgeschwindigkeit ); // throws WindChillException
 		
-		final ErgebnisRecord ergebnis = 
-									new ErgebnisRecord( physTemperatur, 
-											            windgeschwindigkeit, 
-											            gefuehlteTemperatur 
-											          );
+		final ErgebnisRecord ergebnis = new ErgebnisRecord( physTemperatur, 									 
+											                windgeschwindigkeit, 
+											                gefuehlteTemperatur 
+											              );
 		
 		return ResponseEntity.status( OK ).body( ergebnis );
 	}
