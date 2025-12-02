@@ -60,9 +60,9 @@ public class WindChillLogik {
 	    final double va = physTemperatur;
 
 	    final double gefuehlteTemperatur        = 13.12 + 0.6215 * va + (0.3965 * va - 11.37) * v;
-	    final double gefuehlteTempraturGerundet = Math.round( gefuehlteTemperatur * 10 ) / 10;
+	    final double gefuehlteTemperaturGerundet = Math.round( gefuehlteTemperatur * 10 ) / 10;
 
-	    return gefuehlteTempraturGerundet;
+	    return gefuehlteTemperaturGerundet;
 	}
 	
 }
